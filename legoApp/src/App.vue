@@ -2,8 +2,12 @@
 import Header from './components/Header.vue'
 </script>
 
+
 <template>
-  <div class="HomeHeader">
-     <router-view/>
-  </div>
+  <v-app>
+    <Header />
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
