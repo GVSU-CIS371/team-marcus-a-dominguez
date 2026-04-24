@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 import { createRouter, createWebHashHistory} from "vue-router"
+import '@mdi/font/css/materialdesignicons.css'
 
 import './style.css'
 import App from './App.vue'
@@ -23,5 +24,9 @@ import 'vuetify/styles'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
-const vuetify = createVuetify({components, directives, theme: { defaultTheme: 'light'}})
+const vuetify = createVuetify(
+    {components, 
+    directives, 
+    theme: { defaultTheme: 'light'},
+    icons: {defaultSet: 'mdi'},})
 createApp(App).use(vuetify).use(router).mount('#app')

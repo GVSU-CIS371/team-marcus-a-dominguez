@@ -8,17 +8,16 @@
 <template>
     <v-app>
         <v-app-bar class="legoHeader">
-            <v-app-bar-title>Lego Collectors</v-app-bar-title>
-            <v-app-bar-nav-icon @click="showRightDrawer = !showRightDrawer"></v-app-bar-nav-icon>
+            <img class="legoLogo" src="../assets/lego-logo.png" alt="Lego Logo" >
+            <v-app-bar-title>Collectors</v-app-bar-title>
+            <v-app-bar-nav-icon icon="mdi-menu" @click="showRightDrawer = !showRightDrawer"></v-app-bar-nav-icon>
         </v-app-bar>
-        <v-navigation-drawer location="right" permanent v-model="showRightDrawer">
+        <v-navigation-drawer  class="HamburgerItems" location="right" permanent v-model="showRightDrawer">
+            <v-list>
+                <v-list-item prepend-icon="mdi-login">Sign In</v-list-item>
+                <v-list-item prepend-icon="mdi-home">Home</v-list-item>
+                <v-list-item prepend-icon="mdi-account"> Profile </v-list-item>
+            </v-list>
         </v-navigation-drawer>
-        <v-main>
-            <ul>
-                <li>Sign In</li>
-                <li>Home</li>
-                <li>Profile</li>
-            </ul>
-        </v-main>
     </v-app>
 </template>

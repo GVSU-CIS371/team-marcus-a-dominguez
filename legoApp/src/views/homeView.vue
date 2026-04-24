@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import Header from '../components/HeaderTest.vue'
+import Header from '../components/Header.vue'
 </script>
 
 <template>
   <div class="HomeHeader">
     <Header/>
+    <v-carousel>
+        
+    </v-carousel>
   </div>
 </template>

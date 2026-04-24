@@ -9,3 +9,12 @@
 .v-application {
   background-color: white !important;
 }
+
+.legoLogo {
+  width: 5%;
+  height: auto;
+}
+
+.HamburgerItems {
+  color: gray;
+}
