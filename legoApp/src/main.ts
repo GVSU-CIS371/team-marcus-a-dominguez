@@ -7,10 +7,11 @@ import './style.css'
 import App from './App.vue'
 import Home from './views/homeView.vue'
 import test from './views/testView.vue'
+import SignIn from './views/signUpIn.vue'
 
 
 const routes = [
-    {path: "/", component: Home},
+    {path: "/", component: SignIn},
     {path: "/test", component: test }
 ]
 
