@@ -1,7 +1,6 @@
 <template>
   <v-container>
 
-    <!-- 🔐 LOGIN STATE -->
     <v-card v-if="!user" class="pa-6 text-center">
       <v-card-title>Sign in</v-card-title>
 
@@ -10,7 +9,6 @@
       </v-btn>
     </v-card>
 
-    <!-- 🧾 PROFILE SETUP STATE -->
     <v-card v-else-if="user && !hasProfile" class="pa-6">
       <v-card-title>Complete Your Profile</v-card-title>
 
