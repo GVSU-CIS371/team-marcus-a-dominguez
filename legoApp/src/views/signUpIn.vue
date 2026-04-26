@@ -2,13 +2,14 @@
   <v-container>
 
     <v-card v-if="!user" class="pa-6 text-center">
-      <v-card-title>Sign in</v-card-title>
+      <v-card-title>Sign up or Log In With Google</v-card-title>
+      <v-card-subtitle > To create your intial profile please sign in with Google then fill out the following field</v-card-subtitle>
+      <v-card-subtitle > If you already have an account just sign in with Google</v-card-subtitle>
 
       <v-btn color="primary" @click="signInWithGoogle">
         Sign in with Google
       </v-btn>
     </v-card>
-
     <v-card v-else-if="user && !hasProfile" class="pa-6">
       <v-card-title>Complete Your Profile</v-card-title>
 
@@ -20,7 +21,13 @@
         Done
       </v-btn>
     </v-card>
-
+    <v-card> 
+      
+    </v-card>
+    
+    <v-btn v-if="user" color="error" variant="outlined" class="mt-6" @click="signOutUser">
+  Temporary Sign Out (UI Testing)
+</v-btn> 
   </v-container>
 </template>
 
@@ -32,7 +39,8 @@ import { auth, db } from "../firebase";
 import {
   GoogleAuthProvider,
   signInWithPopup,
-  onAuthStateChanged
+  onAuthStateChanged, 
+  signOut,
 } from "firebase/auth";
 
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -85,6 +93,17 @@ const saveProfile = async () => {
 
   hasProfile.value = true;
   router.push("/");
+};
+const signOutUser = async () => {
+  await signOut(auth);
+
+  // reset UI state for testing
+  user.value = null;
+  hasProfile.value = false;
+
+  name.value = "";
+  theme.value = "";
+  bio.value = "";
 };
 
 onMounted(() => {
