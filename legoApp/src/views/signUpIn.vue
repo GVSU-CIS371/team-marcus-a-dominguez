@@ -1,21 +1,41 @@
 <template>
   <v-container>
 
-    <v-card v-if="!user" class="pa-6 text-center">
-      <v-card-title>Sign up or Log In With Google</v-card-title>
-      <v-card-subtitle > To create your intial profile please sign in with Google then fill out the following field</v-card-subtitle>
-      <v-card-subtitle > If you already have an account just sign in with Google</v-card-subtitle>
-
-      <v-btn color="primary" @click="signInWithGoogle">
+    <v-card v-if="!user" class="SignInCard">
+      <v-card-title>Welcome to Lego Collectors!!!</v-card-title>
+      <v-card-subtitle > To Create Your intial profiles or Log Back In Please sign in With Google</v-card-subtitle>
+      <div class="Sign-InBI">
+        <v-btn color="primary" @click="signInWithGoogle">
         Sign in with Google
-      </v-btn>
+        </v-btn>
+        <img class="WavingMan" src="../assets/wave.jpeg">
+      </div>
     </v-card>
     <v-card v-else-if="user && !hasProfile" class="pa-6">
       <v-card-title>Complete Your Profile</v-card-title>
 
-      <v-text-field v-model="name" label="Display Name" />
+      <v-text-field v-model="FirstName" label="First Name" />
+      <v-text-field v-model="LastName" label="Last Name" />
+      <v-text-field v-model="displayName" label="Display Name Others Will See"/>
       <v-text-field v-model="theme" label="Favorite LEGO Theme" />
-      <v-textarea v-model="bio" label="Bio" />
+      <v-menu v-model="menuOpen" :close-on-content-click="false">
+        <template v-slot:activator="{ props }">
+          <v-text-field
+            v-model="birthday"
+            label="Birthday"
+            readonly
+            prepend-icon="mdi-calendar"
+            v-bind="props"
+          />
+        </template>
+        <v-date-picker
+          v-model="birthday"
+          @update:modelValue="menuOpen = false"
+        />
+      </v-menu>
+      <v-textarea v-model="bio" label="A small Bio of Yourself" />
+      <v-textarea v-model="favThing" label="Favorite Thigns About Lego"/>
+      
 
       <v-btn color="success" @click="saveProfile">
         Done
@@ -50,12 +70,14 @@ const router = useRouter();
 const user = ref<any>(null);
 const hasProfile = ref(false);
 
-const name = ref("");
+const FirstName = ref("");
+const LastName = ref("");
+const displayName = ref("");
 const theme = ref("");
 const bio = ref("");
+const favThing = ref("");
 const birthday = ref("");
-const displayName = ref("");
-
+const menuOpen = ref(false)
 
 const provider = new GoogleAuthProvider(); 
 
@@ -71,15 +93,11 @@ const checkProfile = async () => {
 
   const ref = doc(db, "users", user.value.uid);
   const snap = await getDoc(ref);
-
   if (snap.exists()) {
     hasProfile.value = true;
     router.push("/");
   } else {
     hasProfile.value = false;
-
-    // prefill from Google
-    name.value = user.value.displayName || "";
   }
 };
 
@@ -89,24 +107,29 @@ const saveProfile = async () => {
   await setDoc(doc(db, "users", user.value.uid), {
     uid: user.value.uid,
     email: user.value.email,
-    name: name.value,
+
+    firstName: FirstName.value,
+    lastName: LastName.value,
+    displayName: displayName.value,
     theme: theme.value,
     bio: bio.value,
+    favThing: favThing.value,
   });
 
   hasProfile.value = true;
   router.push("/");
 };
+
 const signOutUser = async () => {
   await signOut(auth);
-
-  // reset UI state for testing
   user.value = null;
   hasProfile.value = false;
-
-  name.value = "";
+  FirstName.value = "";
+  LastName.value = "";
+  displayName.value = "";
   theme.value = "";
   bio.value = "";
+  favThing.value = "";
 };
 
 onMounted(() => {

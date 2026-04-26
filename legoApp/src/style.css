@@ -79,3 +79,30 @@ body {
 .HomeCard .v-card-subtitle {
   margin-bottom: 10px;
 }
+
+/*styles for sign-up Page*/
+
+.Sign-InBI {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.WavingMan {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+}
+
+.SignInCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   
+  text-align: center;    
+  gap: 18px;             
+  max-width: 800px;      
+  width: 100%;
+  margin: 40px auto;     
+  padding: 32px;
+}
