@@ -53,6 +53,9 @@ const hasProfile = ref(false);
 const name = ref("");
 const theme = ref("");
 const bio = ref("");
+const birthday = ref("");
+const displayName = ref("");
+
 
 const provider = new GoogleAuthProvider(); 
 
