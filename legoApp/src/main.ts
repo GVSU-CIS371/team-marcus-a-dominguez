@@ -8,14 +8,15 @@ import App from './App.vue'
 import Home from './views/homeView.vue'
 import test from './views/testView.vue'
 import SignIn from './views/signUpIn.vue'
+import profile from './views/profileView.vue'
 
 
 const routes = [
     {path: "/", component: Home},
     {path: "/signIn", component: SignIn },
+    {path: "/profile", component: profile},
     {path: "/test", component: test }
 ]
-
 
 const router = createRouter({
     history: createWebHashHistory(),
