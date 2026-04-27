@@ -4,7 +4,6 @@
     <template v-else>
       <div class="mainProfile">
 
-<!-- Normal Profile View -->
 <div v-if="!editing">
   <h1>{{ profile.displayName }}'s Lego Collector Profile</h1>
 
