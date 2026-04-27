@@ -11,7 +11,8 @@ import SignIn from './views/signUpIn.vue'
 
 
 const routes = [
-    {path: "/", component: SignIn},
+    {path: "/", component: Home},
+    {path: "/signIn", component: SignIn },
     {path: "/test", component: test }
 ]
 
