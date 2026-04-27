@@ -3,28 +3,60 @@
     <div v-if="loading"> Loading... </div>
     <template v-else>
       <div class="mainProfile">
-        <h1>{{ profile.displayName }}'s Lego Collector Profile</h1>
-        <v-avatar>
-          <img v-if="profile?.profileImage" :src="profile.profileImage" />
-          <img v-else src="../assets/profile.png" />
-        </v-avatar>
-        <h1>{{ profile.displayName }}</h1>
-        <p>{{ profile.bio }}</p>
-        <v-btn color="primary" @click="startEditing">
-          Edit Profile
-        </v-btn>
-      </div>
-      <v-divider class="my-6" />
-      <v-row>
-        <v-col cols="12" md="6">
-          <strong>Favorite Theme:</strong>
-          {{ profile.theme }}
-        </v-col>
-        <v-col cols="12" md="6">
-          <strong>Favorite Thing About LEGO:</strong>
-          {{ profile.favThing }}
-        </v-col>
-      </v-row>
+
+<!-- Normal Profile View -->
+<div v-if="!editing">
+  <h1>{{ profile.displayName }}'s Lego Collector Profile</h1>
+
+  <v-avatar>
+    <img v-if="profile?.profileImage" :src="profile.profileImage" />
+    <img src="../assets/profile.png" />
+  </v-avatar>
+
+  <h1>{{ profile.displayName }}</h1>
+  <p>{{ profile.bio }}</p>
+
+  <v-btn color="primary" @click="startEditing">
+    Edit Profile
+  </v-btn>
+</div>
+
+
+<!-- Edit Mode -->
+<div v-else>
+  <h2>Edit Profile</h2>
+
+  <v-textarea
+    v-model="profile.bio"
+    label="Bio"
+  />
+
+  <v-text-field
+    v-model="profile.theme"
+    label="Favorite Theme"
+  />
+
+  <v-text-field
+    v-model="profile.favThing"
+    label="Favorite Thing About LEGO"
+  />
+
+  <div class="mt-4">
+    <v-btn color="primary" @click="saveProfile">
+      Save
+    </v-btn>
+
+    <v-btn
+      class="ml-2"
+      variant="outlined"
+      @click="cancelEdit"
+    >
+      Cancel
+    </v-btn>
+  </div>
+</div>
+
+</div>
 
       <section class="mt-10">
         <h2>My Sets ({{ sets.length }})</h2>
@@ -174,13 +206,11 @@ import {
   deleteDoc
 } from 'firebase/firestore'
 
-// Profile refs
 const profile = ref<any>(null)
 const originalProfile = ref(null)
 const loading = ref(true)
 const editing = ref(false)
 
-// Sets refs
 interface LegoSet {
   id: string
   name: string
@@ -197,7 +227,6 @@ const imageUrlError = ref(false)
 const imageTab = ref('upload')
 const isUploadingSet = ref(false)
 
-// Load profile from Firestore
 const loadProfile = async () => {
   const user = auth.currentUser
   if (!user) return
@@ -211,7 +240,6 @@ const loadProfile = async () => {
   loading.value = false
 }
 
-// Load sets from Firestore subcollection
 const loadSets = async () => {
   const user = auth.currentUser
   if (!user) return
@@ -231,14 +259,12 @@ const loadSets = async () => {
   }
 }
 
-// Format date for display
 const formatDate = (timestamp: any): string => {
   if (!timestamp) return ''
   const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp)
   return date.toLocaleDateString()
 }
 
-// Start editing profile
 const startEditing = () => {
   originalProfile.value = {
     ...profile.value
@@ -246,7 +272,6 @@ const startEditing = () => {
   editing.value = true
 }
 
-// Cancel edit
 const cancelEdit = () => {
   profile.value = {
     ...originalProfile.value
@@ -254,7 +279,6 @@ const cancelEdit = () => {
   editing.value = false
 }
 
-// Save profile changes
 const saveProfile = async () => {
   const user = auth.currentUser
   if (!user) return
@@ -268,7 +292,6 @@ const saveProfile = async () => {
   editing.value = false
 }
 
-// Close set dialog and reset form
 const closeSetDialog = () => {
   showSetDialog.value = false
   newSetName.value = ''
@@ -278,7 +301,6 @@ const closeSetDialog = () => {
   imageTab.value = 'upload'
 }
 
-// Add new set with image upload or URL
 const addSet = async () => {
   const user = auth.currentUser
   if (!user) return
@@ -288,7 +310,6 @@ const addSet = async () => {
   try {
     let finalImageUrl = ''
 
-    // Option 1: Upload file
     if (selectedFile.value && selectedFile.value[0]) {
       const file = selectedFile.value[0]
       console.log('Uploading file:', file.name, file.size)
@@ -299,13 +320,11 @@ const addSet = async () => {
       finalImageUrl = await getDownloadURL(fileRef)
       console.log('Image URL obtained:', finalImageUrl)
     }
-    // Option 2: Use URL
     else if (imageUrl.value) {
       finalImageUrl = imageUrl.value
       console.log('Using provided URL:', finalImageUrl)
     }
 
-    // Add set document to Firestore
     const docRef = await addDoc(
       collection(db, 'collections', user.uid, 'sets'),
       {
@@ -315,7 +334,6 @@ const addSet = async () => {
       }
     )
 
-    // Add the new set to the local array
     sets.value.push({
       id: docRef.id,
       name: newSetName.value,
@@ -323,7 +341,6 @@ const addSet = async () => {
       createdAt: new Date()
     })
 
-    // Close dialog and reset form
     closeSetDialog()
   } catch (error) {
     console.error('Error adding set:', error)
@@ -333,7 +350,6 @@ const addSet = async () => {
   }
 }
 
-// Delete a set
 const deleteSet = async (setId: string) => {
   const user = auth.currentUser
   if (!user) return
@@ -345,7 +361,6 @@ const deleteSet = async (setId: string) => {
   try {
     await deleteDoc(doc(db, 'collections', user.uid, 'sets', setId))
 
-    // Remove from local array
     sets.value = sets.value.filter((set) => set.id !== setId)
   } catch (error) {
     console.error('Error deleting set:', error)
@@ -353,7 +368,7 @@ const deleteSet = async (setId: string) => {
   }
 }
 
-// Load data on mount
+
 onMounted(async () => {
   try {
     await loadProfile()
